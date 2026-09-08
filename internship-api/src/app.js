@@ -3,19 +3,24 @@
 const express = require("express");
 const cors = require("cors");
 const path = require("node:path");
+const helmet = require("helmet");
+const rateLimit = require("express-rate-limit");
 
 const DOMAINS = new Set(["Full Stack Development", "UI/UX", "Data Analytics", "Cyber Security"]);
 const MODES = new Set(["Remote", "Hybrid", "On-site"]);
 
 function createApp(database) {
     const app = express();
+    app.disable("x-powered-by");
+    app.use(helmet());
     app.use(cors());
     app.use(express.json({ limit: "32kb" }));
     app.use(express.static(path.resolve(__dirname, "../.."), { index: "index.html" }));
+    app.use("/api", rateLimit({ windowMs: 15 * 60 * 1000, limit: 100, standardHeaders: "draft-7", legacyHeaders: false }));
 
     const success = (res, data, meta = {}) => res.json({ status: "success", data, meta });
     const failure = (res, code, message, details = []) => {
-        const statusCode = code === "NOT_FOUND" ? 404 : code === "DUPLICATE_ID" ? 409 : code === "INTERNAL_ERROR" ? 500 : 400;
+        const statusCode = code === "NOT_FOUND" || code === "INTERNSHIP_NOT_FOUND" ? 404 : code === "DUPLICATE_ID" || code === "DUPLICATE_APPLICATION" ? 409 : code === "INTERNAL_ERROR" ? 500 : 400;
         return res.status(statusCode).json({ status: "error", data: null, error: { code, message, details } });
     };
 
@@ -41,6 +46,26 @@ function createApp(database) {
     app.get("/api/internships/:id", (req, res) => {
         const row = database.prepare("SELECT * FROM internships WHERE id = ?").get(req.params.id);
         return row ? success(res, toInternship(row)) : failure(res, "NOT_FOUND", "Not found");
+    });
+
+    app.post("/api/applications", rateLimit({ windowMs: 15 * 60 * 1000, limit: 10, standardHeaders: "draft-7", legacyHeaders: false }), (req, res) => {
+        const result = validateApplication(req.body);
+        if (!result.valid) return failure(res, "VALIDATION_ERROR", "Application validation failed", result.errors);
+        const internship = database.prepare("SELECT id FROM internships WHERE id = ?").get(result.value.internshipId);
+        if (!internship) return failure(res, "INTERNSHIP_NOT_FOUND", "Internship not found");
+        try {
+            const created = database.prepare(`INSERT INTO applications
+                (internship_id, applicant_name, applicant_email, portfolio_url, message)
+                VALUES (@internshipId, @name, @email, @portfolio, @message)`).run(result.value);
+            return res.status(201).json({
+                status: "success",
+                data: { id: Number(created.lastInsertRowid), internshipId: result.value.internshipId },
+                meta: {}
+            });
+        } catch (error) {
+            if (error.code === "SQLITE_CONSTRAINT_UNIQUE") return failure(res, "DUPLICATE_APPLICATION", "You have already applied for this internship");
+            throw error;
+        }
     });
 
     app.post("/api/internships", (req, res) => {
@@ -104,8 +129,24 @@ function validatePayload(payload, requireId) {
     return { valid: true, value: { id: value.id, title: value.title.trim(), domain: value.domain, mode: value.mode, location: value.location.trim(), skills: value.skills.map((skill) => skill.trim()), openings: value.openings, description: value.description || null, application_url: value.application_url || null } };
 }
 
+function validateApplication(payload) {
+    const value = payload && typeof payload === "object" ? payload : {};
+    const errors = [];
+    const name = typeof value.name === "string" ? value.name.trim() : "";
+    const email = typeof value.email === "string" ? value.email.trim().toLowerCase() : "";
+    const portfolio = typeof value.portfolio === "string" ? value.portfolio.trim() : "";
+    const message = typeof value.message === "string" ? value.message.trim() : "";
+    if (!/^INT-\d{3,}$/.test(String(value.internshipId || ""))) errors.push({ field: "internshipId", message: "Must identify a valid internship" });
+    if (name.length < 2 || name.length > 100) errors.push({ field: "name", message: "Must be 2-100 characters" });
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.length > 254) errors.push({ field: "email", message: "Must be a valid email address" });
+    if (portfolio && !isSafeUrl(portfolio)) errors.push({ field: "portfolio", message: "Must be an HTTPS URL" });
+    if (message.length < 20 || message.length > 2000) errors.push({ field: "message", message: "Must be 20-2000 characters" });
+    if (errors.length) return { valid: false, errors };
+    return { valid: true, value: { internshipId: value.internshipId, name, email, portfolio: portfolio || null, message } };
+}
+
 function isSafeUrl(value) { try { return new URL(value).protocol === "https:"; } catch { return false; } }
 function toInternship(row) { return { ...row, skills: JSON.parse(row.skills) }; }
 function toRow(value) { return { ...value, skills: JSON.stringify(value.skills) }; }
 
-module.exports = { createApp, validatePayload };
+module.exports = { createApp, validatePayload, validateApplication };

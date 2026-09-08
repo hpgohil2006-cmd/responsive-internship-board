@@ -1,63 +1,6 @@
 "use strict";
 
 /* =========================================
-   Internship Data
-========================================= */
-
-const internships = [
-    {
-        id: "INT-101",
-        title: "Frontend Intern",
-        domain: "Full Stack Development",
-        mode: "Remote",
-        location: "India",
-        skills: ["HTML", "CSS", "JavaScript"],
-        openings: 3
-    },
-
-    {
-        id: "INT-102",
-        title: "API Engineering Intern",
-        domain: "Full Stack Development",
-        mode: "Hybrid",
-        location: "Pune",
-        skills: ["Node.js", "SQL", "Testing"],
-        openings: 2
-    },
-
-    {
-        id: "INT-103",
-        title: "UI/UX Intern",
-        domain: "UI/UX",
-        mode: "Remote",
-        location: "India",
-        skills: ["Figma", "Research", "Accessibility"],
-        openings: 1
-    },
-
-    {
-        id: "INT-104",
-        title: "Data Analyst Intern",
-        domain: "Data Analytics",
-        mode: "On-site",
-        location: "Bengaluru",
-        skills: ["Excel", "SQL", "Data visualisation"],
-        openings: 2
-    },
-
-    {
-        id: "INT-105",
-        title: "Security Operations Intern",
-        domain: "Cyber Security",
-        mode: "Remote",
-        location: "India",
-        skills: ["Linux", "Logs", "Networking"],
-        openings: 1
-    }
-];
-
-
-/* =========================================
    DOM Elements
 ========================================= */
 
@@ -151,40 +94,23 @@ let currentInternships = [];
    Loading Simulation
 ========================================= */
 
-function loadInternships() {
+async function loadInternships() {
 
     showLoading();
 
-    setTimeout(() => {
-
-        try {
-
-            if (!Array.isArray(internships)) {
-                throw new Error(
-                    "Internship data is invalid."
-                );
-            }
-
-            currentInternships = internships;
-
-            hideLoading();
-
-            renderInternships(
-                currentInternships
-            );
-
-        } catch (error) {
-
-            console.error(
-                "Internship loading failed:",
-                error
-            );
-
-            showError();
-
+    try {
+        const response = await fetch("/api/internships?limit=100");
+        const result = await response.json();
+        if (!response.ok || result.status !== "success" || !Array.isArray(result.data)) {
+            throw new Error(result.error?.message || "Unable to load internships.");
         }
-
-    }, 600);
+        currentInternships = result.data;
+        hideLoading();
+        renderInternships(currentInternships);
+    } catch (error) {
+        console.error("Internship loading failed:", error.message);
+        showError();
+    }
 }
 
 
@@ -615,7 +541,7 @@ closeApplicationModal.addEventListener(
 
 applicationForm.addEventListener(
     "submit",
-    function (event) {
+    async function (event) {
 
         event.preventDefault();
 
@@ -693,55 +619,28 @@ applicationForm.addEventListener(
         }
 
 
-        /* Duplicate application */
+        const submitButton = applicationForm.querySelector("button[type=submit]");
+        submitButton.disabled = true;
+        applicationMessage.textContent = "Submitting application...";
+        applicationMessage.style.color = "";
 
-        const applications =
-            getApplications();
-
-        const duplicate =
-            applications.some(
-                application =>
-                    application.email === email &&
-                    application.internshipId ===
-                        internshipId
-            );
-
-
-        if (duplicate) {
-
-            applicationMessage.textContent =
-                "You have already applied for this internship.";
-
-            return;
+        try {
+            const response = await fetch("/api/applications", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ internshipId, name, email, portfolio, message })
+            });
+            const result = await response.json();
+            if (!response.ok) throw new Error(result.error?.message || "Application could not be submitted.");
+            applicationMessage.textContent = "Application submitted successfully!";
+            applicationMessage.style.color = "var(--success)";
+            applicationForm.reset();
+        } catch (error) {
+            applicationMessage.textContent = error.message;
+            applicationMessage.style.color = "var(--danger)";
+        } finally {
+            submitButton.disabled = false;
         }
-
-
-        /* Save demo application */
-
-        applications.push({
-            internshipId,
-            name,
-            email,
-            portfolio,
-            message,
-            submittedAt:
-                new Date().toISOString()
-        });
-
-
-        localStorage.setItem(
-            "internhubApplications",
-            JSON.stringify(applications)
-        );
-
-
-        applicationMessage.textContent =
-            "Application submitted successfully!";
-
-        applicationMessage.style.color =
-            "var(--success)";
-
-        applicationForm.reset();
 
     }
 );
@@ -750,23 +649,6 @@ applicationForm.addEventListener(
 /* =========================================
    Application Helpers
 ========================================= */
-
-function getApplications() {
-
-    try {
-
-        return JSON.parse(
-            localStorage.getItem(
-                "internhubApplications"
-            )
-        ) || [];
-
-    } catch {
-
-        return [];
-    }
-}
-
 
 function isValidEmail(email) {
 

@@ -56,3 +56,32 @@ test("returns consistent validation errors", async () => {
     assert.equal(result.body.error.code, "VALIDATION_ERROR");
     database.close();
 });
+
+test("accepts valid applications and rejects invalid duplicates", async () => {
+    const { app, database } = setup();
+    database.prepare("INSERT INTO internships (id, title, domain, mode, location, skills, openings) VALUES (?, ?, ?, ?, ?, ?, ?)").run("INT-201", "QA Intern", "Full Stack Development", "Remote", "India", '["Testing"]', 1);
+    const application = { internshipId: "INT-201", name: "Asha Student", email: "asha@example.com", portfolio: "https://example.com/work", message: "I am excited to learn through this internship." };
+    const created = await request(app, "POST", "/api/applications", application);
+    assert.equal(created.status, 201);
+    assert.equal(created.body.data.internshipId, "INT-201");
+    const duplicate = await request(app, "POST", "/api/applications", { ...application, email: "ASHA@example.com" });
+    assert.equal(duplicate.status, 409);
+    assert.equal(duplicate.body.error.code, "DUPLICATE_APPLICATION");
+    const invalid = await request(app, "POST", "/api/applications", { ...application, email: "bad", portfolio: "javascript:alert(1)" });
+    assert.equal(invalid.status, 400);
+    assert.equal(invalid.body.error.code, "VALIDATION_ERROR");
+    database.close();
+});
+
+test("sets security headers", async () => {
+    const { app, database } = setup();
+    const server = app.listen(0);
+    try {
+        const response = await fetch(`http://127.0.0.1:${server.address().port}/health`);
+        assert.equal(response.headers.get("x-content-type-options"), "nosniff");
+        assert.equal(response.headers.get("x-powered-by"), null);
+    } finally {
+        server.close();
+        database.close();
+    }
+});

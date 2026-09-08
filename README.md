@@ -6,6 +6,33 @@ A RESTful API built with **Node.js, Express.js, and SQLite** for managing intern
 
 The Internship Board API is developed as part of a **Full Stack Development Internship – Task 2: REST API and Persistent Data**.
 
+## 🔐 Task 3: Secure Application Integration
+
+The frontend is served from `http://localhost:3000/` and loads internship records from `GET /api/internships`. Loading, empty, error, and retry states are visible in the browser.
+
+Applications are submitted with `POST /api/applications`:
+
+```json
+{
+  "internshipId": "INT-101",
+  "name": "Asha Student",
+  "email": "asha@example.com",
+  "portfolio": "https://example.com/work",
+  "message": "I am excited to learn through this internship."
+}
+```
+
+The server rejects missing or invalid names, email addresses, unsafe portfolio URLs, short messages, unknown internship IDs, and duplicate applications for the same internship and email. Applications are persisted in SQLite and duplicate detection is case-insensitive.
+
+Security checklist:
+
+* Helmet secure headers are enabled and Express identifies are hidden.
+* API requests are rate limited to 100 requests per 15 minutes; application submissions are limited to 10 per 15 minutes.
+* SQLite queries use prepared statements and bound parameters.
+* Applicant records are not logged and no secrets are stored in the repository.
+
+Run `npm test` inside `internship-api` to verify CRUD, application success/rejection, and security-header tests. Current result: 4 tests passed.
+
 The API allows users to:
 
 * View all internship opportunities
@@ -382,7 +409,7 @@ http://localhost:3000
 To check whether the API is running:
 
 ```http
-GET /api/health
+GET /health
 ```
 
 Expected response:
@@ -428,12 +455,13 @@ curl -X POST http://localhost:3000/api/internships ^
 
 | Method | Endpoint               | Description          |
 | ------ | ---------------------- | -------------------- |
-| GET    | `/api/health`          | Check API status     |
+| GET    | `/health`              | Check API status     |
 | GET    | `/api/internships`     | Get all internships  |
 | GET    | `/api/internships/:id` | Get internship by ID |
 | POST   | `/api/internships`     | Create internship    |
 | PUT    | `/api/internships/:id` | Update internship    |
 | DELETE | `/api/internships/:id` | Delete internship    |
+| POST   | `/api/applications`    | Submit an application |
 
 ## 📸 Screenshots
 
@@ -491,11 +519,8 @@ Possible future improvements include:
 * PostgreSQL database integration
 * JWT authentication
 * User registration and login
-* Internship application functionality
 * Admin dashboard
 * Advanced filtering
-* API rate limiting
-* Automated unit and integration tests
 * API documentation using Swagger
 * Deployment with a production database
 
