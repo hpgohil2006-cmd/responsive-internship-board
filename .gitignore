@@ -1,0 +1,5 @@
+node_modules/
+internship-api/data/*.db
+internship-api/data/*.db-shm
+internship-api/data/*.db-wal
+.env
