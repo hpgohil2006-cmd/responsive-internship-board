@@ -37,6 +37,10 @@ Security checklist:
 
 Run `npm test` inside `internship-api` to verify CRUD, application success/rejection, and security-header tests. Current result: 4 tests passed.
 
+## 🚀 Task 4: Production-Ready Capstone
+
+The capstone deliverable and quality evidence are documented in [CAPSTONE_REPORT.md](CAPSTONE_REPORT.md). It covers the complete user journey, responsive/accessibility checks, health monitoring, safe request logging, security controls, regression tests, seed verification, and GitHub Pages deployment limits.
+
 The API allows users to:
 
 * View all internship opportunities

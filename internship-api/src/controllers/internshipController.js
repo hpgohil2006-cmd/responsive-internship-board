@@ -25,11 +25,14 @@ function parseInternship(row) {
         company: row.company,
         location: row.location,
         domain: row.domain,
+        mode: row.mode,
+        openings: row.openings,
         description: row.description,
         skills: parseJsonOrText(row.skills),
         duration: row.duration,
         stipend: row.stipend,
-        apply_url: row.apply_url,
+        apply_url: row.apply_url || row.application_url,
+        application_url: row.application_url || row.apply_url,
         created_at: row.created_at,
         updated_at: row.updated_at
     };
@@ -111,17 +114,20 @@ function listInternships(database) {
       const total = totalRow.total;
       const totalPages = total === 0 ? 0 : Math.ceil(total / limit);
 
+      const pagination = {
+        page,
+        limit,
+        total,
+        totalPages,
+        hasNextPage: page < totalPages,
+        hasPreviousPage: page > 1 && totalPages > 0
+      };
+
       return res.status(200).json({
         status: "success",
         data: rows.map(parseInternship),
-        pagination: {
-          page,
-          limit,
-          total,
-          totalPages,
-          hasNextPage: page < totalPages,
-          hasPreviousPage: page > 1 && totalPages > 0
-        }
+        pagination,
+        meta: pagination
       });
     } catch (error) {
       next(error);
@@ -378,6 +384,7 @@ function deleteInternship(database) {
         status: "success",
         data: {
           id: req.params.id,
+          deleted: true,
           message: "Internship deleted successfully."
         }
       });

@@ -23,21 +23,12 @@ const database = new Database(databasePath);
 database.pragma("journal_mode = WAL");
 database.pragma("foreign_keys = ON");
 
-database.exec(`
-  CREATE TABLE IF NOT EXISTS internships (
-    id TEXT PRIMARY KEY,
-    title TEXT NOT NULL,
-    domain TEXT NOT NULL,
-    mode TEXT NOT NULL,
-    location TEXT NOT NULL,
-    skills TEXT NOT NULL,
-    openings INTEGER NOT NULL DEFAULT 1,
-    description TEXT,
-    application_url TEXT,
-    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
-  )
-`);
+const internshipColumns = database.prepare("PRAGMA table_info(internships)").all().map((column) => column.name);
+if (internshipColumns.length > 0 && !internshipColumns.includes("mode")) {
+  database.exec("DROP TABLE IF EXISTS applications; DROP TABLE internships;");
+}
+
+database.exec(fs.readFileSync(path.join(__dirname, "..", "schema.sql"), "utf8"));
 
 const port = Number(process.env.PORT || 3000);
 

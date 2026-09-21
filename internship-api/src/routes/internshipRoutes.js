@@ -55,6 +55,13 @@ function internshipRoutes(database) {
     updateInternship(database)
   );
 
+  router.patch(
+    "/:id",
+    updateInternshipValidation,
+    validateRequest,
+    updateInternship(database)
+  );
+
   // DELETE /api/internships/:id
   router.delete(
     "/:id",
