@@ -19,7 +19,8 @@ function createApp(database) {
   app.use(express.json({ limit: "100kb" }));
   app.use((req, res, next) => {
     const startedAt = Date.now();
-    res.on("finish", () => console.log(JSON.stringify({ method: req.method, path: req.path, status: res.statusCode, durationMs: Date.now() - startedAt })));
+    const requestPath = req.originalUrl;
+    res.on("finish", () => console.log(JSON.stringify({ method: req.method, path: requestPath, status: res.statusCode, durationMs: Date.now() - startedAt })));
     next();
   });
   app.use("/api", rateLimit({ windowMs: 15 * 60 * 1000, limit: 100, standardHeaders: "draft-7", legacyHeaders: false }));
@@ -34,7 +35,7 @@ function createApp(database) {
       database.prepare("SELECT 1").get();
       databaseReady = true;
     } catch {}
-    res.status(200).json({
+    res.status(databaseReady ? 200 : 503).json({
       status: databaseReady ? "success" : "error",
       message: "Internship API is running",
       data: {

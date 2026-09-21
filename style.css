@@ -63,6 +63,11 @@ textarea:focus-visible {
     outline: 3px solid #93c5fd;
 }
 
+button:disabled {
+    cursor: wait;
+    opacity: 0.65;
+}
+
 
 /* ================================
    Container
@@ -591,6 +596,8 @@ textarea:focus-visible {
 
 .details-modal {
     width: min(600px, calc(100% - 32px));
+    max-height: calc(100dvh - 32px);
+    overflow: auto;
 
     padding: 0;
 
@@ -745,10 +752,13 @@ textarea:focus-visible {
 
     .header-content {
         min-height: 64px;
+        align-items: flex-start;
+        padding: 14px 0;
     }
 
     .nav-links {
         gap: 14px;
+        padding-top: 4px;
     }
 
     .hero {
@@ -789,6 +799,21 @@ textarea:focus-visible {
         padding: 28px;
     }
 
+    .details-modal {
+        width: calc(100% - 20px);
+        max-height: calc(100dvh - 20px);
+    }
+
+    .modal-header,
+    #modalContent,
+    #applicationForm {
+        padding: 18px;
+    }
+
+    .modal-header h2 {
+        font-size: 1.25rem;
+    }
+
     .footer-content {
         flex-direction: column;
     }
@@ -814,6 +839,24 @@ textarea:focus-visible {
 
     .internship-card {
         padding: 18px;
+    }
+
+    .logo {
+        font-size: 1.3rem;
+    }
+
+    .nav-links {
+        gap: 10px;
+        font-size: 0.82rem;
+    }
+
+    .hero-description {
+        font-size: 1rem;
+    }
+
+    .search-form,
+    .filters {
+        padding: 16px;
     }
 
 }

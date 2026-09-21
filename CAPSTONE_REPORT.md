@@ -37,6 +37,8 @@ node --check src/app.js
 npm run seed -> Database seeded successfully; Internship records: 5
 ```
 
+The `/health` endpoint checks the SQLite connection and returns HTTP 503 if the database is unavailable. Structured request logs retain method, URL, status, and duration without recording request bodies.
+
 ## Security checklist
 
 - [x] Helmet secure headers enabled

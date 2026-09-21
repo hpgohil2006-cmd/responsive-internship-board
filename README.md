@@ -41,6 +41,10 @@ Run `npm test` inside `internship-api` to verify CRUD, application success/rejec
 
 The capstone deliverable and quality evidence are documented in [CAPSTONE_REPORT.md](CAPSTONE_REPORT.md). It covers the complete user journey, responsive/accessibility checks, health monitoring, safe request logging, security controls, regression tests, seed verification, and GitHub Pages deployment limits.
 
+Public proof site: https://hpgohil2006-cmd.github.io/responsive-internship-board/
+
+The two-minute walkthrough outline is in [WALKTHROUGH.md](WALKTHROUGH.md).
+
 The API allows users to:
 
 * View all internship opportunities
@@ -338,13 +342,13 @@ updated_at
 The database schema is available in:
 
 ```text
-database/schema.sql
+schema.sql
 ```
 
 Seed data is available in:
 
 ```text
-database/seed.sql
+data/internships.json and `npm run seed`
 ```
 
 ## 🌱 Seed Data
@@ -515,7 +519,7 @@ The `.gitignore` file excludes:
 ```text
 node_modules/
 .env
-database/*.db
+data/*.db
 ```
 
 The project provides `.env.example` so other developers know which environment variables are required without exposing secrets.

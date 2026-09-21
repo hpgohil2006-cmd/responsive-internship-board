@@ -133,6 +133,7 @@ async function loadInternships() {
 function renderInternships(data) {
 
     internshipGrid.innerHTML = "";
+    internshipGrid.setAttribute("aria-busy", "false");
 
     resultCount.textContent =
         `${data.length} internship${data.length === 1 ? "" : "s"} found`;
@@ -698,6 +699,7 @@ function showLoading() {
     emptyState.hidden = true;
 
     internshipGrid.innerHTML = "";
+    internshipGrid.setAttribute("aria-busy", "true");
 }
 
 
@@ -716,6 +718,7 @@ function showError() {
     emptyState.hidden = true;
 
     internshipGrid.innerHTML = "";
+    internshipGrid.setAttribute("aria-busy", "false");
 
     resultCount.textContent =
         "Unable to load internships";
