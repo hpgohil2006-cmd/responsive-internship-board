@@ -10,6 +10,10 @@ The Internship Board API is developed as part of a **Full Stack Development Inte
 
 The frontend is served from `http://localhost:3000/` and loads internship records from `GET /api/internships`. Loading, empty, error, and retry states are visible in the browser.
 
+### GitHub Pages deployment
+
+GitHub Pages serves static files and cannot run the Node.js/SQLite API. The frontend therefore falls back to `internship-records.json` when the API is unavailable, so the public site still displays and filters the internship cards. To enable live application submissions on GitHub Pages, set `window.INTERNHUB_API_URL` before `script.js` in `index.html` to the URL of a deployed API that allows the site origin through CORS. Localhost uses the bundled API automatically.
+
 Applications are submitted with `POST /api/applications`:
 
 ```json

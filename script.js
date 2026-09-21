@@ -1,5 +1,7 @@
 "use strict";
 
+const API_BASE_URL = window.INTERNHUB_API_URL || "";
+
 /* =========================================
    DOM Elements
 ========================================= */
@@ -99,7 +101,7 @@ async function loadInternships() {
     showLoading();
 
     try {
-        const response = await fetch("/api/internships?limit=100");
+        const response = await fetch(`${API_BASE_URL}/api/internships?limit=100`);
         const result = await response.json();
         if (!response.ok || result.status !== "success" || !Array.isArray(result.data)) {
             throw new Error(result.error?.message || "Unable to load internships.");
@@ -108,8 +110,18 @@ async function loadInternships() {
         hideLoading();
         renderInternships(currentInternships);
     } catch (error) {
-        console.error("Internship loading failed:", error.message);
-        showError();
+        console.warn("API unavailable; loading the static internship records.", error.message);
+        try {
+            const fallbackResponse = await fetch("internship-records.json");
+            const fallbackData = await fallbackResponse.json();
+            if (!Array.isArray(fallbackData.internships)) throw new Error("Fallback records are invalid.");
+            currentInternships = fallbackData.internships;
+            hideLoading();
+            renderInternships(currentInternships);
+        } catch (fallbackError) {
+            console.error("Internship loading failed:", fallbackError.message);
+            showError();
+        }
     }
 }
 
@@ -625,7 +637,7 @@ applicationForm.addEventListener(
         applicationMessage.style.color = "";
 
         try {
-            const response = await fetch("/api/applications", {
+            const response = await fetch(`${API_BASE_URL}/api/applications`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ internshipId, name, email, portfolio, message })
