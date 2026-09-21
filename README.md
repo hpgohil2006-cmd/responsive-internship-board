@@ -1,143 +1,149 @@
-# Internship Board REST API
+# 🚀 Responsive Internship Board
 
-A RESTful API built with **Node.js, Express.js, and SQLite** for managing internship records. This project provides complete CRUD operations, input validation, pagination, filtering, search, persistent database storage, and consistent API responses.
+A full-stack internship listing and application platform built with **HTML, CSS, JavaScript, Node.js, Express.js, and SQLite**.
+
+The project provides a responsive frontend for discovering internship opportunities and a RESTful backend for managing internship records, searching and filtering opportunities, pagination, validation, and internship applications with persistent database storage.
+
+---
 
 ## 📌 Project Overview
 
-The Internship Board API is developed as part of a **Full Stack Development Internship – Task 2: REST API and Persistent Data**.
+The **Responsive Internship Board** is a full-stack web application designed to provide a simple and structured platform for students and job seekers to discover internship opportunities.
 
-## 🔐 Task 3: Secure Application Integration
+The project combines:
 
-The frontend is served from `http://localhost:3000/` and loads internship records from `GET /api/internships`. Loading, empty, error, and retry states are visible in the browser.
+* A responsive and accessible web interface
+* Dynamic internship data loading
+* RESTful API architecture
+* SQLite persistent storage
+* Complete CRUD operations
+* Search and filtering
+* Pagination
+* Request validation
+* Application submission
+* Duplicate application protection
+* Secure HTTP headers
+* API rate limiting
+* Consistent API response and error formats
 
-### GitHub Pages deployment
+The frontend communicates with the backend through REST API endpoints, allowing internship data to be dynamically loaded instead of being hard-coded into the user interface.
 
-GitHub Pages serves static files and cannot run the Node.js/SQLite API. The frontend therefore falls back to `internship-records.json` when the API is unavailable, so the public site still displays and filters the internship cards. To enable live application submissions on GitHub Pages, set `window.INTERNHUB_API_URL` before `script.js` in `index.html` to the URL of a deployed API that allows the site origin through CORS. Localhost uses the bundled API automatically.
+---
 
-Applications are submitted with `POST /api/applications`:
+## 🎯 Project Objectives
 
-```json
-{
-  "internshipId": "INT-101",
-  "name": "Asha Student",
-  "email": "asha@example.com",
-  "portfolio": "https://example.com/work",
-  "message": "I am excited to learn through this internship."
-}
-```
+The main objectives of this project are:
 
-The server rejects missing or invalid names, email addresses, unsafe portfolio URLs, short messages, unknown internship IDs, and duplicate applications for the same internship and email. Applications are persisted in SQLite and duplicate detection is case-insensitive.
+1. Build a responsive internship discovery platform.
+2. Implement a RESTful backend using Node.js and Express.js.
+3. Store internship records persistently using SQLite.
+4. Implement complete CRUD operations.
+5. Provide search and filtering functionality.
+6. Implement pagination for internship records.
+7. Validate API requests before database operations.
+8. Provide consistent success and error responses.
+9. Allow users to submit internship applications.
+10. Prevent duplicate applications.
+11. Apply basic API security practices.
+12. Create a maintainable full-stack project structure.
 
-Security checklist:
+---
 
-* Helmet secure headers are enabled and Express identifies are hidden.
-* API requests are rate limited to 100 requests per 15 minutes; application submissions are limited to 10 per 15 minutes.
-* SQLite queries use prepared statements and bound parameters.
-* Applicant records are not logged and no secrets are stored in the repository.
+# ✨ Key Features
 
-Run `npm test` inside `internship-api` to verify CRUD, application success/rejection, and security-header tests. Current result: 4 tests passed.
+## 🌐 Frontend Features
 
-## 🚀 Task 4: Production-Ready Capstone
+### Internship Listing
 
-The capstone deliverable and quality evidence are documented in [CAPSTONE_REPORT.md](CAPSTONE_REPORT.md). It covers the complete user journey, responsive/accessibility checks, health monitoring, safe request logging, security controls, regression tests, seed verification, and GitHub Pages deployment limits.
-
-Public proof site: https://hpgohil2006-cmd.github.io/responsive-internship-board/
-
-The two-minute walkthrough outline is in [WALKTHROUGH.md](WALKTHROUGH.md).
-
-The API allows users to:
-
-* View all internship opportunities
-* View a specific internship
-* Create new internship records
-* Update existing internship records
-* Delete internship records
-* Search internships
-* Filter internships by domain and mode
-* Paginate large result sets
-* Validate incoming data
-* Handle errors with consistent HTTP status codes
-* Store internship data persistently using SQLite
-
-## 🎯 Objective
-
-The main objective of this project is to build a predictable and reliable REST API with:
-
-* Clear API contracts
-* Persistent data storage
-* Safe CRUD operations
-* Input validation
-* Consistent error handling
-* Pagination and filtering
-* Seed data for easy testing
-
-## 🛠️ Technologies Used
-
-| Technology        | Purpose                         |
-| ----------------- | ------------------------------- |
-| Node.js           | JavaScript runtime              |
-| Express.js        | REST API framework              |
-| SQLite            | Persistent database             |
-| better-sqlite3    | SQLite database driver          |
-| express-validator | Request validation              |
-| dotenv            | Environment variable management |
-| cors              | Cross-Origin Resource Sharing   |
-| Postman           | API testing                     |
-| Git & GitHub      | Version control                 |
-
-## 📂 Project Structure
-
-```text
-internship-api/
-│
-├── src/
-│   ├── controllers/
-│   │   └── internshipController.js
-│   │
-│   ├── middleware/
-│   │   ├── errorHandler.js
-│   │   └── validate.js
-│   │
-│   ├── routes/
-│   │   └── internshipRoutes.js
-│   │
-│   ├── validators/
-│   │   └── internshipValidator.js
-│   │
-│   ├── database.js
-│   └── server.js
-│
-├── database/
-│   ├── schema.sql
-│   └── seed.sql
-│
-├── scripts/
-│   └── seed.js
-│
-├── tests/
-│   └── api-tests.md
-│
-├── .env.example
-├── .gitignore
-├── package.json
-├── package-lock.json
-├── README.md
-└── internship-records-sample.json
-```
-
-## ⚙️ Features
-
-### 1. Internship Listing
-
-Retrieve all internship records through:
+The frontend retrieves internship records dynamically from the backend API.
 
 ```http
 GET /api/internships
 ```
 
-### 2. Internship Details
+Internship information can include:
 
-Retrieve a specific internship using its ID:
+* Internship ID
+* Title
+* Domain
+* Mode
+* Location
+* Skills
+* Number of openings
+
+---
+
+### 🔎 Search
+
+Users can search internship opportunities using keywords.
+
+Example:
+
+```http
+GET /api/internships?search=JavaScript
+```
+
+Search can be used to find relevant internships based on available internship information.
+
+---
+
+### 🏷️ Filtering
+
+Internships can be filtered by:
+
+* Domain
+* Internship mode
+
+Example:
+
+```http
+GET /api/internships?domain=Full%20Stack%20Development
+```
+
+Remote internships can also be filtered:
+
+```http
+GET /api/internships?mode=Remote
+```
+
+Multiple filters can be combined:
+
+```http
+GET /api/internships?search=Node&mode=Remote
+```
+
+---
+
+### 📄 Pagination
+
+The API supports pagination using `page` and `limit`.
+
+Example:
+
+```http
+GET /api/internships?page=1&limit=10
+```
+
+A paginated response contains information such as:
+
+```json
+{
+  "status": "success",
+  "data": [],
+  "pagination": {
+    "page": 1,
+    "limit": 10,
+    "total": 5,
+    "totalPages": 1
+  }
+}
+```
+
+---
+
+### 📋 Internship Details
+
+A specific internship can be retrieved using its unique ID.
 
 ```http
 GET /api/internships/:id
@@ -149,15 +155,59 @@ Example:
 GET /api/internships/INT-101
 ```
 
-### 3. Create Internship
+---
 
-Create a new internship using:
+### 📝 Internship Application
+
+Users can submit an application for an internship through:
+
+```http
+POST /api/applications
+```
+
+Example request:
+
+```json
+{
+  "internshipId": "INT-101",
+  "name": "Asha Student",
+  "email": "asha@example.com",
+  "portfolio": "https://example.com/work",
+  "message": "I am excited to learn through this internship."
+}
+```
+
+The backend validates the application before storing it.
+
+---
+
+### 🔄 Loading, Empty and Error States
+
+The frontend handles different API states, including:
+
+* Loading state
+* Successful data loading
+* Empty internship results
+* API errors
+* Retry functionality
+
+This prevents the interface from becoming unusable when the API is unavailable or returns no records.
+
+---
+
+# 🔧 Backend Features
+
+## CRUD Operations
+
+The REST API supports complete CRUD functionality.
+
+### Create
 
 ```http
 POST /api/internships
 ```
 
-Example request:
+Example:
 
 ```json
 {
@@ -175,90 +225,254 @@ Example request:
 }
 ```
 
-### 4. Update Internship
+### Read
 
-Update an existing internship:
+Get all internships:
+
+```http
+GET /api/internships
+```
+
+Get one internship:
+
+```http
+GET /api/internships/:id
+```
+
+### Update
 
 ```http
 PUT /api/internships/:id
 ```
 
-Example:
-
-```http
-PUT /api/internships/INT-106
-```
-
-### 5. Delete Internship
-
-Delete an internship:
+### Delete
 
 ```http
 DELETE /api/internships/:id
 ```
 
-Example:
+---
 
-```http
-DELETE /api/internships/INT-106
+# 🗄️ Database
+
+The application uses **SQLite** as its persistent database.
+
+The main internship table contains fields such as:
+
+| Field        | Description                   |
+| ------------ | ----------------------------- |
+| `id`         | Unique internship identifier  |
+| `title`      | Internship title              |
+| `domain`     | Internship domain             |
+| `mode`       | Remote, hybrid, or other mode |
+| `location`   | Internship location           |
+| `skills`     | Required skills               |
+| `openings`   | Number of available positions |
+| `created_at` | Record creation timestamp     |
+| `updated_at` | Last update timestamp         |
+
+SQLite provides persistent local storage so internship records are not dependent on temporary in-memory data.
+
+---
+
+# 🌱 Seed Data
+
+The project includes seed data for quickly initializing the database.
+
+Example internship categories include:
+
+* Frontend Intern
+* API Engineering Intern
+* UI/UX Intern
+* Data Analyst Intern
+* Security Operations Intern
+
+Run the seed command:
+
+```bash
+npm run seed
 ```
 
-## 🔎 Search and Filtering
+---
 
-The API supports searching and filtering.
+# 🛡️ Validation
 
-### Search
+Incoming API requests are validated before database operations.
 
-```http
-GET /api/internships?search=JavaScript
+Validation includes:
+
+* Required internship ID
+* Internship title
+* Domain
+* Internship mode
+* Location
+* Skills array
+* Non-negative number of openings
+* Duplicate internship ID detection
+* Valid applicant name
+* Valid email address
+* Valid portfolio URL
+* Application message validation
+* Valid internship ID during application
+
+Invalid requests are rejected with appropriate HTTP status codes and structured error responses.
+
+---
+
+# 🔐 Security
+
+The backend includes several security measures.
+
+### Helmet
+
+Helmet is used to configure secure HTTP response headers.
+
+### Rate Limiting
+
+API requests are rate limited to reduce excessive requests.
+
+Application submissions have a stricter rate limit.
+
+### Prepared Statements
+
+SQLite operations use prepared statements and bound parameters to reduce SQL injection risks.
+
+### CORS
+
+Cross-Origin Resource Sharing is configured for frontend/API communication.
+
+### Environment Variables
+
+Sensitive configuration is managed through environment variables.
+
+The `.env` file should not be committed to GitHub.
+
+---
+
+# 📦 Technologies Used
+
+| Technology         | Purpose                                    |
+| ------------------ | ------------------------------------------ |
+| HTML5              | Frontend structure                         |
+| CSS3               | Responsive styling and UI                  |
+| JavaScript         | Frontend interaction and API communication |
+| Node.js            | Backend JavaScript runtime                 |
+| Express.js         | REST API framework                         |
+| SQLite             | Persistent database                        |
+| better-sqlite3     | SQLite database driver                     |
+| express-validator  | Request validation                         |
+| express-rate-limit | API rate limiting                          |
+| Helmet             | Security headers                           |
+| CORS               | Cross-origin API communication             |
+| dotenv             | Environment configuration                  |
+| Nodemon            | Development server                         |
+| Postman            | API testing                                |
+| Git                | Version control                            |
+| GitHub             | Source code hosting                        |
+
+---
+
+# 🏗️ Project Architecture
+
+The application follows a client-server architecture:
+
+```text
+┌──────────────────────────────┐
+│       Frontend Browser       │
+│                              │
+│ HTML + CSS + JavaScript      │
+└──────────────┬───────────────┘
+               │
+               │ HTTP / REST API
+               ▼
+┌──────────────────────────────┐
+│       Express.js Server      │
+│                              │
+│ Routes                       │
+│ Validation                   │
+│ Controllers / Logic          │
+│ Error Handling               │
+│ Security Middleware          │
+└──────────────┬───────────────┘
+               │
+               │ SQL Queries
+               ▼
+┌──────────────────────────────┐
+│           SQLite             │
+│                              │
+│ Internship Records           │
+│ Application Records          │
+└──────────────────────────────┘
 ```
 
-### Filter by Domain
+---
 
-```http
-GET /api/internships?domain=Full%20Stack%20Development
+# 📂 Project Structure
+
+```text
+responsive-internship-board/
+│
+├── index.html
+├── style.css
+├── script.js
+├── package.json
+├── package-lock.json
+├── README.md
+├── .gitignore
+│
+└── internship-api/
+    │
+    ├── src/
+    │   ├── controllers/
+    │   │   └── internshipController.js
+    │   │
+    │   ├── middleware/
+    │   │   ├── errorHandler.js
+    │   │   └── validate.js
+    │   │
+    │   ├── routes/
+    │   │   └── internshipRoutes.js
+    │   │
+    │   ├── validators/
+    │   │   └── internshipValidator.js
+    │   │
+    │   ├── database.js
+    │   └── server.js
+    │
+    ├── database/
+    │   ├── schema.sql
+    │   └── seed.sql
+    │
+    ├── scripts/
+    │   └── seed.js
+    │
+    ├── tests/
+    │
+    ├── .env.example
+    ├── .gitignore
+    ├── package.json
+    └── package-lock.json
 ```
 
-### Filter by Mode
+---
 
-```http
-GET /api/internships?mode=Remote
-```
+# 🔗 API Endpoints
 
-### Combined Filters
+| Method | Endpoint               | Description                   |
+| ------ | ---------------------- | ----------------------------- |
+| GET    | `/health`              | Check API status              |
+| GET    | `/api/internships`     | Get all internships           |
+| GET    | `/api/internships/:id` | Get internship by ID          |
+| POST   | `/api/internships`     | Create internship             |
+| PUT    | `/api/internships/:id` | Update internship             |
+| DELETE | `/api/internships/:id` | Delete internship             |
+| POST   | `/api/applications`    | Submit internship application |
 
-```http
-GET /api/internships?search=Node&mode=Remote
-```
+---
 
-## 📄 Pagination
+# 📦 API Response Format
 
-Pagination is supported using `page` and `limit`.
-
-Example:
-
-```http
-GET /api/internships?page=1&limit=2
-```
-
-Example response:
-
-```json
-{
-  "status": "success",
-  "data": [],
-  "pagination": {
-    "page": 1,
-    "limit": 2,
-    "total": 5,
-    "totalPages": 3
-  }
-}
-```
-
-## 📦 API Response Format
-
-Successful responses follow a predictable structure:
+## Successful Response
 
 ```json
 {
@@ -267,7 +481,7 @@ Successful responses follow a predictable structure:
 }
 ```
 
-List responses additionally contain pagination information:
+For list responses:
 
 ```json
 {
@@ -282,7 +496,7 @@ List responses additionally contain pagination information:
 }
 ```
 
-Error responses follow a consistent structure:
+## Error Response
 
 ```json
 {
@@ -295,130 +509,24 @@ Error responses follow a consistent structure:
 }
 ```
 
-## 🛡️ Validation and Error Handling
+---
 
-The API validates incoming requests before processing them.
+# 📊 HTTP Status Codes
 
-Validation includes:
+| Status Code | Meaning                        |
+| ----------- | ------------------------------ |
+| `200`       | Successful request             |
+| `201`       | Resource created               |
+| `400`       | Validation error / bad request |
+| `404`       | Resource not found             |
+| `409`       | Duplicate resource             |
+| `500`       | Internal server error          |
 
-* Required internship ID
-* Internship title
-* Valid domain
-* Valid internship mode
-* Location
-* Skills array
-* Non-negative number of openings
-* Duplicate internship ID detection
+---
 
-The API uses appropriate HTTP status codes:
+# ❤️ Health Check
 
-| Status Code | Meaning               |
-| ----------- | --------------------- |
-| 200         | Successful request    |
-| 201         | Resource created      |
-| 400         | Validation error      |
-| 404         | Resource not found    |
-| 409         | Duplicate resource    |
-| 500         | Internal server error |
-
-## 🗄️ Database
-
-This project uses **SQLite** for persistent local data storage.
-
-The database contains an `internships` table with fields including:
-
-```text
-id
-title
-domain
-mode
-location
-skills
-openings
-created_at
-updated_at
-```
-
-The database schema is available in:
-
-```text
-schema.sql
-```
-
-Seed data is available in:
-
-```text
-data/internships.json and `npm run seed`
-```
-
-## 🌱 Seed Data
-
-The project includes sample internship records such as:
-
-* Frontend Intern
-* API Engineering Intern
-* UI/UX Intern
-* Data Analyst Intern
-* Security Operations Intern
-
-The seed script initializes the SQLite database.
-
-Run:
-
-```bash
-npm run seed
-```
-
-## 🚀 Installation
-
-### Step 1: Clone the repository
-
-```bash
-git clone YOUR_GITHUB_REPOSITORY_URL
-```
-
-### Step 2: Enter the project directory
-
-```bash
-cd internship-api
-```
-
-### Step 3: Install dependencies
-
-```bash
-npm install
-```
-
-### Step 4: Configure environment variables
-
-Create a `.env` file:
-
-```env
-PORT=3000
-NODE_ENV=development
-```
-
-### Step 5: Initialize the database
-
-```bash
-npm run seed
-```
-
-### Step 6: Start the development server
-
-```bash
-npm run dev
-```
-
-The API will run at:
-
-```text
-http://localhost:3000
-```
-
-## ❤️ Health Check
-
-To check whether the API is running:
+The API provides a health-check endpoint:
 
 ```http
 GET /health
@@ -433,125 +541,314 @@ Expected response:
 }
 ```
 
-## 🧪 Testing
+This endpoint can be used to quickly verify whether the backend server is running.
 
-The API can be tested using:
+---
+
+# 🧪 Testing
+
+The backend can be tested using:
 
 * Postman
 * cURL
-* Browser for GET requests
+* Browser
+* Node.js test runner
 
-### Example cURL
+Run the automated tests from the API directory:
 
-Get all internships:
+```bash
+npm test
+```
+
+The test suite covers important API behavior including CRUD operations, application validation, application submission, rejection cases, and security headers.
+
+---
+
+# 🚀 Installation and Setup
+
+## Prerequisites
+
+Install the following:
+
+* Node.js 18 or higher
+* npm
+* Git
+* A modern web browser
+* Postman (optional)
+
+---
+
+## 1. Clone the Repository
+
+```bash
+git clone https://github.com/hpgohil2006-cmd/responsive-internship-board.git
+```
+
+---
+
+## 2. Open the Project
+
+```bash
+cd responsive-internship-board
+```
+
+---
+
+## 3. Open the API Directory
+
+```bash
+cd internship-api
+```
+
+---
+
+## 4. Install Dependencies
+
+```bash
+npm install
+```
+
+---
+
+## 5. Configure Environment Variables
+
+Create a `.env` file inside `internship-api`.
+
+Example:
+
+```env
+PORT=3000
+NODE_ENV=development
+```
+
+Do not commit your actual `.env` file to GitHub.
+
+---
+
+## 6. Initialize Seed Data
+
+```bash
+npm run seed
+```
+
+---
+
+## 7. Start the Development Server
+
+```bash
+npm run dev
+```
+
+The API will be available at:
+
+```text
+http://localhost:3000
+```
+
+---
+
+## 8. Start the Production Server
+
+```bash
+npm start
+```
+
+---
+
+# 🌐 Frontend Integration
+
+The frontend communicates with the REST API using JavaScript.
+
+The main data flow is:
+
+```text
+User opens Internship Board
+          ↓
+Frontend JavaScript sends API request
+          ↓
+GET /api/internships
+          ↓
+Express.js processes request
+          ↓
+SQLite returns internship records
+          ↓
+JSON response sent to frontend
+          ↓
+JavaScript renders internship cards
+```
+
+This architecture keeps the frontend presentation layer separate from backend business logic and persistent data storage.
+
+---
+
+# 🔍 Example API Requests
+
+### Get all internships
 
 ```bash
 curl http://localhost:3000/api/internships
 ```
 
-Get a specific internship:
+### Get a specific internship
 
 ```bash
 curl http://localhost:3000/api/internships/INT-101
 ```
 
-Create an internship:
+### Search internships
 
 ```bash
-curl -X POST http://localhost:3000/api/internships ^
-  -H "Content-Type: application/json" ^
-  -d "{\"id\":\"INT-106\",\"title\":\"Backend Development Intern\",\"domain\":\"Full Stack Development\",\"mode\":\"Remote\",\"location\":\"India\",\"skills\":[\"Node.js\",\"Express.js\"],\"openings\":2}"
+curl "http://localhost:3000/api/internships?search=JavaScript"
 ```
 
-## 📮 API Endpoints
+### Filter remote internships
 
-| Method | Endpoint               | Description          |
-| ------ | ---------------------- | -------------------- |
-| GET    | `/health`              | Check API status     |
-| GET    | `/api/internships`     | Get all internships  |
-| GET    | `/api/internships/:id` | Get internship by ID |
-| POST   | `/api/internships`     | Create internship    |
-| PUT    | `/api/internships/:id` | Update internship    |
-| DELETE | `/api/internships/:id` | Delete internship    |
-| POST   | `/api/applications`    | Submit an application |
-
-## 📸 Screenshots
-
-Add your project screenshots here after testing the API.
-
-Recommended screenshots:
-
-1. Project folder structure
-2. Successful `npm run seed`
-3. Running API server
-4. Health check
-5. GET all internships
-6. Pagination response
-7. Search/filter response
-8. GET internship by ID
-9. POST/create response
-10. PUT/update response
-11. DELETE response
-12. Validation error
-13. 404 not found response
-14. GitHub repository
-
-Example:
-
-```text
-screenshots/
-├── server.png
-├── health.png
-├── get-all.png
-├── pagination.png
-├── create.png
-├── update.png
-├── delete.png
-└── validation-error.png
+```bash
+curl "http://localhost:3000/api/internships?mode=Remote"
 ```
 
-## 🔐 Security
+### Pagination
 
-Sensitive environment files should not be committed to GitHub.
-
-The `.gitignore` file excludes:
-
-```text
-node_modules/
-.env
-data/*.db
+```bash
+curl "http://localhost:3000/api/internships?page=1&limit=10"
 ```
-
-The project provides `.env.example` so other developers know which environment variables are required without exposing secrets.
-
-## 📈 Future Improvements
-
-Possible future improvements include:
-
-* PostgreSQL database integration
-* JWT authentication
-* User registration and login
-* Admin dashboard
-* Advanced filtering
-* API documentation using Swagger
-* Deployment with a production database
-
-## 🎓 Internship Task
-
-**Task:** REST API and Persistent Data
-
-**Project:** Internship Board REST API
-
-**Purpose:** Build a predictable REST API with persistent storage, validation, pagination, CRUD operations, and consistent error handling.
-
-## 👨‍💻 Author
-
-**Your Name**
-
-Full Stack Development Intern
 
 ---
 
-## 📄 License
+# 📸 Screenshots
+
+For project documentation, the following screenshots can be added:
+
+```text
+screenshots/
+├── homepage.png
+├── internship-list.png
+├── search.png
+├── filter.png
+├── application-form.png
+├── api-server.png
+├── health-check.png
+├── get-internships.png
+├── pagination.png
+├── create-internship.png
+├── update-internship.png
+├── delete-internship.png
+├── validation-error.png
+└── github-repository.png
+```
+
+Example Markdown:
+
+```markdown
+![Internship Board](screenshots/homepage.png)
+```
+
+---
+
+# 🔄 Development Workflow
+
+The recommended development workflow is:
+
+```text
+1. Modify frontend/backend code
+          ↓
+2. Run application locally
+          ↓
+3. Test API endpoints
+          ↓
+4. Verify frontend integration
+          ↓
+5. Run automated tests
+          ↓
+6. Check git status
+          ↓
+7. Commit changes
+          ↓
+8. Push to GitHub
+```
+
+Git commands:
+
+```bash
+git add .
+git commit -m "Update internship board"
+git push origin main
+```
+
+---
+
+# 📈 Future Enhancements
+
+Potential improvements include:
+
+* PostgreSQL production database
+* JWT-based authentication
+* User registration and login
+* Admin dashboard
+* Internship bookmarking
+* Advanced search
+* Sorting by date or relevance
+* Email notifications
+* Resume upload
+* Application status tracking
+* Swagger/OpenAPI documentation
+* Automated CI/CD pipeline
+* Production cloud deployment
+* Analytics dashboard
+
+---
+
+# 🎓 Internship Task
+
+**Internship:** Full Stack Development Internship
+
+**Task:** REST API and Persistent Data
+
+**Project:** Responsive Internship Board
+
+### Task Requirements Implemented
+
+* RESTful API
+* Node.js and Express.js
+* Persistent SQLite storage
+* CRUD operations
+* Request validation
+* Search
+* Filtering
+* Pagination
+* Seed data
+* Consistent API responses
+* Error handling
+* Frontend/API integration
+* Application submission
+* Security middleware
+
+---
+
+# 👨‍💻 Author
+
+**Harshvardhansinh Gohil**
+
+Full Stack Development Intern
+
+GitHub:
+
+https://github.com/hpgohil2006-cmd
+
+---
+
+# 📄 License
 
 This project is created for educational and internship purposes.
+
+---
+
+## ⭐ Project Summary
+
+The **Responsive Internship Board** demonstrates a practical full-stack development workflow by combining a responsive frontend with a structured REST API and persistent SQLite database.
+
+It demonstrates practical knowledge of:
+
+**Frontend Development → REST API Development → Database Management → Validation → Security → Testing → Git/GitHub**
+
+The project is designed to be maintainable, extensible, and suitable as a foundation for a production-style internship management platform.
